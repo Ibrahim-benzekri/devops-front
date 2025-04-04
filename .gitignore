@@ -1,23 +1,52 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# dotenv environment variable files
+.env*
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
-
-# testing
+# Testing
 /coverage
 
-# production
-/build
+# Storybook Build
+storybook-static
 
-# misc
+# Next JS
+/.next/
+/out/
+
+# Vercel folder
+.vercel
+
+# Local Netlify
+.netlify
+.idea
+*.env
+
+# Optional eslint cache
+.eslintcache
+
+# Logs
+*.log*
+
+# Dependency directories
+node_modules
+jspm_packages
+
+# Mac files
 .DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Optional npm cache directory
+.npm
+
+# Yarn 2
+.pnp/
+.pnp.*
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.yarn-integrity # Yarn Integrity file
+
+## library folder
+dist
+templates
