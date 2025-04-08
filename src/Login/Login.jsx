@@ -1,12 +1,95 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useState,useEffect } from 'react';
+import { UseLocalState } from '../Util/UseLocalState';
 
 export default function Login() {
   const navigate = useNavigate();
+  const [user, setUser] = useState({
+      email: "",
+      password: "",
+    });
+  const [error, setError] = useState("");
+  const [jwt, setJwt] = UseLocalState("", "token");
+  const [showError, setShowError] = useState(false);
+  const [showSucess, setShowSucess] = useState(false);
+
+  useEffect(() => {
+    if (error) {
+      setShowError(true);
+      const timer = setTimeout(() => {
+        setShowError(false);
+        setError("");
+      }, 2000);
+
+      // Clear the timeout if the component unmounts
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+  const EmailValidation = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i);
+  };
+
+  const handleChange = (e) => {
+    setUser({
+      ...user,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  function sendLoginRequest() {
+    if (!EmailValidation(user.email) || user.password === "") {
+      setError("Please Enter All Fields");
+    } else {
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: user.email,
+          password: user.password,
+        }),
+      };
+      fetch("http://localhost:8080/api/v1/auth/authenticate", requestOptions)
+        .then(async (response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            const text = await response.text();
+            throw new Error(text);
+          }
+        })
+        .then((token) => {
+          setShowSucess(true);
+          setShowError(false);
+
+          setTimeout(() => setShowSucess(false), 2000);
+          setTimeout(() => navigate("/home"), 1000);
+          setJwt(token.token);
+        })
+        .catch((err) => {
+          setError(err.message);
+        });
+    }
+  }
+
 
   return (
     <div className='mt-24'>
-  
+      {showError && (
+        <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+        <span class="font-medium">Error :</span> {error}
+      </div>
+      )}
+
+      
+      {showSucess && (
+        <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+        <span class="font-medium">Success :</span> 200 
+      </div>
+      )}
+
   <div class="flex w-full h-full  mx-auto overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800 ">
   <div
         className="hidden bg-cover lg:block lg:w-1/2"
@@ -35,7 +118,7 @@ export default function Login() {
 
         <div class="mt-4">
             <label class="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-200" for="LoggingEmailAddress">Email Address</label>
-            <input id="LoggingEmailAddress" class="block w-full px-4 py-2 text-gray-700 bg-white border rounded-lg dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-blue-300" type="email" />
+            <input name="email" value={user.email ? user.email : ""} onChange={handleChange} class="block w-full px-4 py-2 text-gray-700 bg-white border rounded-lg dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-blue-300" type="email" />
         </div>
 
         <div class="mt-4">
@@ -44,11 +127,11 @@ export default function Login() {
                 <div class="text-xs text-gray-500 dark:text-gray-300 hover:underline">Forget Password?</div>
             </div>
 
-            <input id="loggingPassword" class="block w-full px-4 py-2 text-gray-700 bg-white border rounded-lg dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-blue-300" type="password" />
+            <input name="password" value={user.password ? user.password : ""} onChange={handleChange} class="block w-full px-4 py-2 text-gray-700 bg-white border rounded-lg dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-blue-300" type="password" />
         </div>
 
         <div class="mt-6">
-            <button class="w-full px-6 py-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-gray-800 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50">
+            <button type='submit' onClick={() => sendLoginRequest()} class="w-full px-6 py-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-gray-800 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50">
                 Sign In
             </button>
         </div>
