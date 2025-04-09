@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useState,useEffect } from 'react';
+import { UseLocalState } from '../Util/UseLocalState';
+import fetchService from '../Util/fetchService';
 
 const Game = () => {
   const [targetWord, setTargetWord] = useState('');
@@ -6,6 +10,8 @@ const Game = () => {
   const [remainingLetters, setRemainingLetters] = useState('ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''));
   const [incorrectGuesses, setIncorrectGuesses] = useState(0);
   const [isGameOver, setIsGameOver] = useState(false);
+  const [email,setEmail] = useState();
+  const [jwt,setJwt] = UseLocalState("","token");
 
   // Fetch a random word from the API
   const fetchRandomWord = async () => {
@@ -23,8 +29,40 @@ const Game = () => {
 
   useEffect(() => {
     fetchRandomWord();
+    extractEmailFromJWT(jwt);
   }, []);
-
+  useEffect(() => {
+    if (isGameOver) {
+      const body = {
+        word: targetWord,
+        score: incorrectGuesses,
+        email: email,
+      };
+  
+      const submitScore = async () => {
+        try {
+          const response = await fetch('http://localhost:8080/api/v1/addWord', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${jwt}`,
+            },
+            body: JSON.stringify(body),
+          });
+  
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          console.log('Success:');
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      };
+  
+      submitScore();
+    }
+  }, [isGameOver]);
+  
   const handleLetterClick = (letter) => {
     if (!guessedLetters.includes(letter)) {
       setGuessedLetters([...guessedLetters, letter]);
@@ -50,6 +88,20 @@ const Game = () => {
     ));
   };
 
+  const extractEmailFromJWT = async (tokenn) =>  {
+    try {
+      const payloadBase64 = tokenn.split('.')[1];
+      const decodedPayload = JSON.parse(atob(payloadBase64));
+      setEmail(decodedPayload.sub)
+    } catch (error) {
+      console.error('Invalid JWT token:', error);
+      return null;
+    }
+  }
+
+  
+
+  
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <h1 className="text-4xl font-bold text-gray-800 mb-6">Word Guess Game</h1>
@@ -77,6 +129,7 @@ const Game = () => {
             <p className="text-xl mb-4">You guessed the word correctly!</p>
             <button
               onClick={() => window.location.reload()}
+              
               className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600"
             >
               Play Again
