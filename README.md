@@ -1,70 +1,99 @@
-# Getting Started with Create React App
+#  Frontend - Devine le Mot
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Ce dépôt contient le **frontend** de l'application _Devine le Mot_, un petit jeu interactif où les utilisateurs doivent deviner un mot en se basant sur des espaces vides représentant les lettres. Ce frontend consomme les API exposées par le backend (voir dépôt correspondant).
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+##  Description du projet
 
-### `npm start`
+Ce frontend propose une interface utilisateur claire et intuitive, avec les pages suivantes :
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Page de connexion** (`/login`)
+- **Page d'inscription** (`/signup`)
+- **Page de jeu**(`/`) : pour tenter de deviner les mots (jeu de type pendu/sudoku sans le pendu 😄)
+- **Page d'historique**(`/historique`) : pour consulter toutes les parties déjà jouées
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Ce frontend interagit avec un backend Spring Boot (voir [repo backend]) pour la gestion des utilisateurs et des parties.
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+##  Lancer le projet
 
-### `npm run build`
+###  Via Docker 
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+L’image Docker du frontend est déjà configurée.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Tu peux la build et la lancer avec :
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+docker build -t devine-le-mot-frontend .
+docker run -p 3000:3000 devine-le-mot-frontend
+```
 
-### `npm run eject`
+Par défaut, l’application écoute sur le port 3000.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Lancer en local 
+    Installer les dépendances :
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+npm install
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+    Lancer le projet :
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```bash
+npm start
+```
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+    Assure-toi que le backend est bien lancé et accessible à l’URL configurée dans les appels API.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Tester le frontend
 
-### Code Splitting
+Voici comment tester toutes les fonctionnalités de l’application :
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- Accéder à la page d'inscription et créer un utilisateur
 
-### Analyzing the Bundle Size
+- Se connecter via la page de login
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- Jouer une partie sur la page principale
 
-### Making a Progressive Web App
+- Aller sur la page d'historique pour consulter les parties déjà jouées
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### Interactions avec Docker
 
-### Advanced Configuration
+Le frontend est également conteneurisé et suit la même logique que le backend :
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- Build de l'image Docker via un Dockerfile
 
-### Deployment
+- Exposition du service sur le port 3000 
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- Utilisation dans Docker Compose 
 
-### `npm run build` fails to minify
+- Publication automatique de l’image sur Docker Hub via GitHub Actions
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### CI/CD - GitHub Actions
+
+Le pipeline CI/CD est mis en place avec GitHub Actions, et comprend :
+
+- Installation et build du projet
+
+- Build de l’image Docker
+
+- Push automatique de l’image sur Docker Hub
+
+### Stack technique
+
+- React 
+
+- Tailwind 
+
+- Docker
+
+- GitHub Actions pour le CI/CD
+
+
+
+### Publication
+
+- L’image Docker du frontend est automatiquement buildée et publiée sur Docker Hub à chaque mise à jour de la branche principale via GitHub Actions.
