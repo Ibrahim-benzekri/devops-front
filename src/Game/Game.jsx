@@ -1,8 +1,7 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useState,useEffect } from 'react';
 import { UseLocalState } from '../Util/UseLocalState';
-import fetchService from '../Util/fetchService';
+import Navbar from '../Util/Navbar';
 
 const Game = () => {
   const [targetWord, setTargetWord] = useState('');
@@ -102,7 +101,8 @@ const Game = () => {
   
 
   
-  return (
+  return (<>
+  <Navbar></Navbar>
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <h1 className="text-4xl font-bold text-gray-800 mb-6">Word Guess Game</h1>
 
@@ -138,7 +138,9 @@ const Game = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
+
 
 export default Game;

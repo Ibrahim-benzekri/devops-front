@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Sign from './sign-up/Sign';
 import Login from './Login/Login';
 import Game from './Game/Game';
+import History from './Game/History';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -18,6 +19,9 @@ root.render(
         </Route>
 
         <Route path="/login" element={<Login></Login>}>
+        </Route>
+
+        <Route path="/history" element={<History></History>}>
         </Route>
       </Routes>
     </Router>
