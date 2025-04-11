@@ -1,0 +1,43 @@
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Build Docker Image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: false
+        tags: ${{secrets.DOCKER_HUB_USERNAME}}/devops-frontend:${{ github.run_number }}
+
+    - name: Login to dockerhub
+      uses: docker/login-action@v1
+      with:
+        username: ${{secrets.DOCKER_HUB_USERNAME}}
+        password: ${{secrets.DOCKER_HUB_ACCESS_TOKEN}}
+
+    - name: Push to dockerhub
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: ${{secrets.DOCKER_HUB_USERNAME}}/devops-backend:${{ github.run_number }}
