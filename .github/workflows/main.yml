@@ -40,4 +40,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{secrets.DOCKER_HUB_USERNAME}}/devops-backend:${{ github.run_number }}
+        tags: ${{secrets.DOCKER_HUB_USERNAME}}/devops-frontend:${{ github.run_number }}
