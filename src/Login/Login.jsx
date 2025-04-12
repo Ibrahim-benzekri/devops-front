@@ -63,7 +63,6 @@ export default function Login() {
         .then((token) => {
           setShowSucess(true);
           setShowError(false);
-
           setTimeout(() => setShowSucess(false), 2000);
           setTimeout(() => navigate("/"), 1000);
           setJwt(token.token);

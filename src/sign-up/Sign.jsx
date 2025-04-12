@@ -69,7 +69,7 @@ export default function Sign() {
           setShowSucess(true);
           setShowError(false);
           setTimeout(() => setShowSucess(false), 2000);
-          console.log(token);
+          setTimeout(() => navigate("/"), 1000);
           setJwt(token.token);
         })
         .catch((err) => {
